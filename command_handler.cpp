@@ -1,0 +1,136 @@
+/**
+ * @file command_handler.cpp
+ * @author SergeiNA (you@domain.com)
+ * @brief Method definitoin of QueueCommand and CommandHandler
+ * @version 1.0
+ * @date 2019-11-26
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+#include "command_handler.h"
+
+void QueueCommand::addCommand(std::string cmd)
+{
+    if(pack.first.empty())
+        pack.second = getUnixTime();
+    pack.first.emplace_back(std::move(cmd));
+    if (pack.first.size() == block_size_ && !nested)
+    {
+        notify();
+    }
+}
+
+void QueueCommand::subscribe(std::unique_ptr<Observer> &&obs)
+{
+    subs.emplace_back(std::move(obs));
+}
+/**
+ * @brief Sent cmd message to all subscribers
+ * 
+ * First call initiate function (create)
+ * then send all commands as a packege
+ * to all subs
+ * At the end call ending function (end)
+ * 
+ * Note: If vector of commands is empty 
+ * "queuery is empty" - will be send as command
+ * and "empty" as a timestamp
+ * 
+ */
+void QueueCommand::notify()
+{
+    if(empty())
+        return;
+    for (size_t i = 0; i < subs.size(); i++){
+        subs[i]->bulk(pack);
+    }
+    ncmds_handled+=pack.first.size();
+    pack.first.clear();
+    pack.first.resize(0);
+}
+
+void QueueCommand::set_nested(bool nested_){
+    nested = nested_;
+}
+
+rawTimestamp QueueCommand::getUnixTime()
+{
+    using namespace std::chrono;
+    return system_clock::now().time_since_epoch();
+}
+
+/**
+ * @brief handle all type of input commands
+ * 
+ * If process get block type command ('{' or '}')
+ * depends on current state It will operate differently
+ * 
+ * - Current state is 'regular':
+ *      get usual command -> call addCommand for current command
+ *      get '{' block start indicator -> call notify, switch state to 
+ *          'nested' and  increment braces_count
+ *      get '}' block end indicator -> throw exception
+ * 
+ * - Current state is 'nested':
+ *      get usual command -> call addCommand for current command
+ *      get '{' block start indicator -> increment braces_count
+ *      get '}' block end indicator -> decrement braces_count
+ *          if braces_count == 0 -> switch state to regular and call notify
+ * 
+ * 
+ * @param cmd input command
+ */
+
+void CommandHandler::process(std::string &&cmd)
+{
+    ++nstrings;
+    if (cmd == "{")
+    {
+        if (!isNested())
+        {
+            state = (size_t)cmdState::nested;
+            queueCmd_->set_nested(true);
+            queueCmd_->notify();
+        }
+        ++braces_count;
+    }
+    else if (cmd == "}")
+    {
+        if (!braces_count)
+            throw std::invalid_argument("} can not be first bracket");
+        --braces_count;
+        if (!braces_count)
+        {
+            ++nblocks;
+            state = (size_t)cmdState::regular;
+            queueCmd_->set_nested(false);
+            queueCmd_->notify();
+        }
+    }
+    else
+        queueCmd_->addCommand(cmd);
+}
+
+/**
+ * @brief Read all commands from stdin and call process on them
+ * 
+ * @param is input stdin stream
+ */
+void CommandHandler::Run(std::istream &is = std::cin)
+{
+    while (is && !is.eof())
+    {
+        std::string temp;
+        std::getline(is, temp);
+        if(temp.empty()&&is.eof())
+            break;
+        process(std::move(temp));
+    }
+    dumpRemains();
+}
+
+void CommandHandler::dumpRemains(){
+    if (!isNested()&&!queueCmd_->empty())
+        queueCmd_->notify();
+}
