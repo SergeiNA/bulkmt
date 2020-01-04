@@ -12,6 +12,7 @@
  */
 #pragma once
 #include "observer.h"
+#include "threadPool.h"
 #include <vector>
 #include <utility>
 
@@ -26,8 +27,12 @@ enum class cmdState{
  */
 class QueueCommand{
 public:
-    QueueCommand():block_size_{100} {};
-    QueueCommand(size_t block_size):block_size_{block_size},nested(false),ncmds_handled{0} {}
+    QueueCommand():block_size_{100} {}
+    QueueCommand(size_t block_size):block_size_{block_size},nested(false),ncmds_handled{0} {
+        fileManager.subscribe(std::make_shared<log_observer>());
+        fileManager.subscribe(std::make_shared<log_observer>());
+        terminalManager.subscribe(std::make_shared<terminal_observer>());
+    }
 
     QueueCommand(const QueueCommand&)   = default;
     QueueCommand(QueueCommand&&)        = default;
@@ -43,7 +48,7 @@ public:
      * 
      * @param obs 
      */
-    void subscribe(std::unique_ptr<Observer>&& obs);
+    void subscribe(std::shared_ptr<Observer> obs);
     /**
      * @brief Notify all subscribers to handle package of commands
      * 
@@ -58,6 +63,7 @@ public:
     size_t GetHandledCmd() const noexcept{
         return ncmds_handled;
     }
+    
     size_t GetNumOfSubs() const noexcept{
         return subs.size();
     }
@@ -70,11 +76,13 @@ private:
 	rawTimestamp getUnixTime();
 
 private:
-    std::vector<std::unique_ptr<Observer>> subs; ///< contains subscribers
-    std::pair<std::vector<std::string>,rawTimestamp> pack; ///< contsains  package of commands with timestamp
+    std::vector<std::shared_ptr<Observer>> subs; ///< contains subscribers
+    Packet pack; ///< contsains  package of commands with timestamp
     size_t block_size_;///< max free block size (if not in block)
     bool nested;///< indicate if commands in block
     size_t ncmds_handled;
+    TaskManager fileManager;
+    TaskManager terminalManager;
 };
 
 /**

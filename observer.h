@@ -23,17 +23,17 @@
 #include <fstream>
 #include <vector>
 #include <chrono>
+#include <atomic>
 
 typedef std::chrono::nanoseconds rawTimestamp;
+typedef std::pair<std::vector<std::string>,rawTimestamp> Packet;
 /**
  * @brief Observer interface
  * 
- * Usage: create/fill/end logs
  */
 class Observer {
 public:
-//string_view
-    virtual void bulk(const std::pair<std::vector<std::string>,rawTimestamp>&) = 0;
+    virtual void bulk(const Packet &) = 0;
     virtual ~Observer() =default;
 };
 /**
@@ -50,8 +50,7 @@ public:
      * 
      * @param cmd command to display
      */
-    // string_view
-    void bulk(const std::pair<std::vector<std::string>,rawTimestamp>& pack) override;
+    void bulk(const Packet& pack) override;
 private:
     bool isBegin; ///< indicate start of printing to stdout
     std::ostream& os;
@@ -70,9 +69,9 @@ public:
      * 
      * @param cmd written command
      */
-    // string_view
-    void bulk(const std::pair<std::vector<std::string>,rawTimestamp>& pack) override;
+    void bulk(const Packet& pack) override;
 private:
+    static std::atomic_int id;
     std::ofstream File_;
 };
 

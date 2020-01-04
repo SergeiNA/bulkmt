@@ -21,9 +21,9 @@ void QueueCommand::addCommand(std::string cmd)
     }
 }
 
-void QueueCommand::subscribe(std::unique_ptr<Observer> &&obs)
+void QueueCommand::subscribe(std::shared_ptr<Observer> obs)
 {
-    subs.emplace_back(std::move(obs));
+    subs.emplace_back(obs);
 }
 /**
  * @brief Sent cmd message to all subscribers
@@ -42,9 +42,12 @@ void QueueCommand::notify()
 {
     if(empty())
         return;
-    for (size_t i = 0; i < subs.size(); i++){
-        subs[i]->bulk(pack);
-    }
+    // for (size_t i = 0; i < subs.size(); i++){
+    //     subs[i]->bulk(pack);
+    // }
+    // std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    fileManager.push(pack);
+    terminalManager.push(pack);
     ncmds_handled+=pack.first.size();
     pack.first.clear();
     pack.first.resize(0);

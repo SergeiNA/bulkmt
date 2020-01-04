@@ -27,10 +27,10 @@ void terminal_observer::bulk(const std::pair<std::vector<std::string>,rawTimesta
 }
 
 log_observer::log_observer() {}
-//string_view
 void log_observer::bulk(const std::pair<std::vector<std::string>,rawTimestamp>& pack){
     using namespace std::chrono;
-    File_.open("bulk" + std::to_string(duration_cast<milliseconds>(pack.second).count()) + ".log");
+    ++id;
+    File_.open("bulk_" + std::to_string(id)+ '_' + std::to_string(duration_cast<milliseconds>(pack.second).count()) + ".log");
     for(const auto& c:pack.first)
         File_ << c << std::endl;
     File_.close();

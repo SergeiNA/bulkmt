@@ -5,9 +5,11 @@ if(NOT DEFINED ENV{TRAVIS_BUILD_NUMBER})
 endif()
 
 project(bulk VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
-set (bulk_files observer.h command_handler.h observer.cpp command_handler.cpp)
+set (bulk_files observer.h threadPool.h threadPool.cpp command_handler.h observer.cpp command_handler.cpp)
 
 add_executable(bulk bulk.cpp ${bulk_files})
+
+find_package(Threads REQUIRED)
 
 set_target_properties(bulk PROPERTIES
     CXX_STANDARD 17
@@ -18,7 +20,6 @@ set_target_properties(bulk PROPERTIES
 # add_executable(test_bulk_regular test_bulk_regular.cpp ${bulk_files})
 # add_executable(test_bulk_nested test_bulk_nested.cpp ${bulk_files})
 
-# find_package(Threads REQUIRED)
 # find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 # set_target_properties(bulk test_bulk_regular test_bulk_nested PROPERTIES
@@ -32,9 +33,9 @@ set_target_properties(bulk PROPERTIES
 #     INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
 # )
 
-# target_link_libraries(bulk
-#     Threads::Threads
-# )
+target_link_libraries(bulk
+    Threads::Threads
+)
 
 # target_link_libraries(test_bulk_regular
 #     Threads::Threads
