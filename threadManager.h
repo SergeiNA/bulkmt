@@ -8,24 +8,15 @@
 #include <future>
 #include <memory>
 
-#include "observer.h"
+#include "metrics.h"
 
-
-// void workers(std::queue<Packet>& packetQueue,
-//             std::condition_variable& conditional_v,
-//             std::mutex& conditional_mutex,
-//             const std::atomic_bool& quit,
-//             std::function<void(const Packet&)> bulk);
-
-
-class TaskManager{
+class ThreadManager{
 
 public:
-    void subscribe(std::shared_ptr<Observer> obs);
-
+    void subscribe(std::shared_ptr<Observer> obs, std::shared_ptr<Metrics> metrics);
     void push(Packet packet);
     void stop();
-    ~TaskManager();
+    ~ThreadManager();
 
 private:
     std::atomic_bool quit = false;

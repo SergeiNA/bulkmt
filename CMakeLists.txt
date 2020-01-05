@@ -4,14 +4,14 @@ if(NOT DEFINED ENV{TRAVIS_BUILD_NUMBER})
     set(ENV{TRAVIS_BUILD_NUMBER} 777)
 endif()
 
-project(bulk VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
-set (bulk_files observer.h threadPool.h threadPool.cpp command_handler.h observer.cpp command_handler.cpp)
+project(bulkmt VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
+set (bulk_files observer.h metrics.h metrics.cpp threadManager.h threadManager.cpp command_handler.h observer.cpp command_handler.cpp)
 
-add_executable(bulk bulk.cpp ${bulk_files})
+add_executable(bulkmt bulkmt.cpp ${bulk_files})
 
 find_package(Threads REQUIRED)
 
-set_target_properties(bulk PROPERTIES
+set_target_properties(bulkmt PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
     COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
@@ -22,7 +22,7 @@ set_target_properties(bulk PROPERTIES
 
 # find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
-# set_target_properties(bulk test_bulk_regular test_bulk_nested PROPERTIES
+# set_target_properties(bulkmt test_bulk_regular test_bulk_nested PROPERTIES
 #     CXX_STANDARD 17
 #     CXX_STANDARD_REQUIRED ON
 #     COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
@@ -33,7 +33,7 @@ set_target_properties(bulk PROPERTIES
 #     INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
 # )
 
-target_link_libraries(bulk
+target_link_libraries(bulkmt
     Threads::Threads
 )
 
@@ -47,7 +47,7 @@ target_link_libraries(bulk
 #     ${Boost_LIBRARIES}
 # )
 
-# install(TARGETS bulk RUNTIME DESTINATION bin)
+# install(TARGETS bulkmt RUNTIME DESTINATION bin)
 
 # set(CPACK_GENERATOR DEB)
 

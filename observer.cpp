@@ -3,9 +3,9 @@
  * @author SergeiNA (you@domain.com)
  * @brief log_observer and terminal_observer method definition
  * @version 1.0
- * @date 2019-11-26
+ * @date 2020-01-05
  * 
- * @copyright Copyright (c) 2019
+ * @copyright Copyright (c) 2020
  * 
  */
 

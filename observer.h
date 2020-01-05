@@ -9,9 +9,9 @@
  * end - close file or add endl
  * bukl - dump package of commands
  * @version 1.0
- * @date 2019-11-26
+ * @date 2020-01-05
  * 
- * @copyright Copyright (c) 2019
+ * @copyright Copyright (c) 2020
  * 
  */
 

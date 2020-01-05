@@ -3,9 +3,9 @@
  * @author SergeiNA (you@domain.com)
  * @brief Method definitoin of QueueCommand and CommandHandler
  * @version 1.0
- * @date 2019-11-26
+ * @date 2020-01-05
  * 
- * @copyright Copyright (c) 2019
+ * @copyright Copyright (c) 2020
  * 
  */
 #include "command_handler.h"
@@ -21,9 +21,9 @@ void QueueCommand::addCommand(std::string cmd)
     }
 }
 
-void QueueCommand::subscribe(std::shared_ptr<Observer> obs)
+void QueueCommand::subscribe(std::shared_ptr<ThreadManager> tmanager)
 {
-    subs.emplace_back(obs);
+    subs.emplace_back(tmanager);
 }
 /**
  * @brief Sent cmd message to all subscribers
@@ -42,13 +42,12 @@ void QueueCommand::notify()
 {
     if(empty())
         return;
-    // for (size_t i = 0; i < subs.size(); i++){
-    //     subs[i]->bulk(pack);
-    // }
+    for (size_t i = 0; i < subs.size(); i++){
+        subs[i]->push(pack);
     // std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    fileManager.push(pack);
-    terminalManager.push(pack);
-    ncmds_handled+=pack.first.size();
+    }
+    if(metrics_)
+       metrics_->collect(pack.first);
     pack.first.clear();
     pack.first.resize(0);
 }
@@ -105,7 +104,6 @@ void CommandHandler::process(std::string &&cmd)
         --braces_count;
         if (!braces_count)
         {
-            ++nblocks;
             state = (size_t)cmdState::regular;
             queueCmd_->set_nested(false);
             queueCmd_->notify();
@@ -131,6 +129,8 @@ void CommandHandler::Run(std::istream &is = std::cin)
         process(std::move(temp));
     }
     dumpRemains();
+    if(metrics_)
+        metrics_->collect({},nstrings);
 }
 
 void CommandHandler::dumpRemains(){
