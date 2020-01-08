@@ -3,11 +3,9 @@
  * @author SergeiNA (you@domain.com)
  * @brief observer pattern implementation
  * 
- * log_observer - logging packages info to files
- * terminal_observer - display packages to stdout
- * create - initialize file or display "bulk"
- * end - close file or add endl
- * bukl - dump package of commands
+ * log_observer - logging packages info files and apply fibonacci on each command
+ * terminal_observer - display packages to stdout and apply factorial on each command
+ * bukl - dump package of commands and apply math operation on them before show
  * @version 1.0
  * @date 2020-01-05
  * 
@@ -39,8 +37,10 @@ public:
 /**
  * @brief Display packages to stdout
  * 
- * ex: bulk: cmd1,cmd2
- *     bulk: cmd3
+ * input: 1,2
+ *        3
+ * out: bulk: 1,2
+ *      bulk: 6 
  */
 class terminal_observer : public Observer {
 public:
@@ -48,7 +48,7 @@ public:
     /**
      * @brief display command to stdout
      * 
-     * @param cmd command to display
+     * @param pack commands with timestamp to display
      */
     void bulk(const Packet& pack) override;
 private:
@@ -59,7 +59,8 @@ private:
 
 /**
  * @brief Create and wtite to file package of commands
- * name files as bulk<unixtime>.log
+ * name files as bulk_n_<unixtime>.log
+ * where n is a static atomic increment for each file
  */
 class log_observer : public Observer {
 public:
@@ -67,7 +68,7 @@ public:
     /**
      * @brief write commands to file
      * 
-     * @param cmd written command
+     * @param pack commands with timestamp to write
      */
     void bulk(const Packet& pack) override;
 private:
@@ -75,4 +76,5 @@ private:
     std::ofstream File_;
 };
 
-
+/// inline initialization for static atomic increment in log_observer
+inline std::atomic_int log_observer::id=0;

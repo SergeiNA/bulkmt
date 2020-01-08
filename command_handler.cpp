@@ -28,10 +28,9 @@ void QueueCommand::subscribe(std::shared_ptr<ThreadManager> tmanager)
 /**
  * @brief Sent cmd message to all subscribers
  * 
- * First call initiate function (create)
- * then send all commands as a packege
- * to all subs
- * At the end call ending function (end)
+ * Send all commands as a packege with timestamp to all subs
+ * If metrics_ exist collect package information
+ * Clear pack of commands (delete commands)
  * 
  * Note: If vector of commands is empty 
  * "queuery is empty" - will be send as command
@@ -42,12 +41,12 @@ void QueueCommand::notify()
 {
     if(empty())
         return;
-    for (size_t i = 0; i < subs.size(); i++){
+    for (size_t i = 0; i < subs.size(); i++)
         subs[i]->push(pack);
-    // std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
+    
     if(metrics_)
        metrics_->collect(pack.first);
+
     pack.first.clear();
     pack.first.resize(0);
 }
@@ -80,6 +79,7 @@ rawTimestamp QueueCommand::getUnixTime()
  *      get '}' block end indicator -> decrement braces_count
  *          if braces_count == 0 -> switch state to regular and call notify
  * 
+ * Also accumulate number of handled lines
  * 
  * @param cmd input command
  */
@@ -115,6 +115,10 @@ void CommandHandler::process(std::string &&cmd)
 
 /**
  * @brief Read all commands from stdin and call process on them
+ * 
+ * Read form is input stream while is not empty
+ * Call dumpRemains() when while loop is end
+ * and if metrics_ exist collect metrics
  * 
  * @param is input stdin stream
  */

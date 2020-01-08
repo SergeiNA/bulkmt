@@ -42,7 +42,7 @@ public:
      */
     void addCommand(std::string cmd);
     /**
-     * @brief Add subscriber as observer
+     * @brief Add subscriber as observer (threadManager)
      * 
      * @param obs 
      */
@@ -66,16 +66,16 @@ private:
 /**
  * @brief Return timestamp of each command in unixtime
  * 
- * @return std::string returned timestamp
+ * @return rawTimestamp returned timestamp
  */
 	rawTimestamp getUnixTime();
 
 private:
-    std::vector<std::shared_ptr<ThreadManager>> subs; ///< contains subscribers
-    std::shared_ptr<Metrics> metrics_; ///< metrics handler
-    Packet pack; ///< contsains  package of commands with timestamp
-    size_t block_size_;///< max free block size (if not in block)
-    bool nested;///< indicate if commands in block
+    std::vector<std::shared_ptr<ThreadManager>> subs;   ///< contains subscribers
+    std::shared_ptr<Metrics> metrics_;                  ///< metrics handler
+    Packet pack;                                        ///< contsains  package of commands with timestamp
+    size_t block_size_;                                 ///< max free block size (if not in block)
+    bool nested;                                        ///< indicate if commands in block
 };
 
 /**
@@ -132,9 +132,9 @@ private:
     void dumpRemains();
 private:
 	std::unique_ptr<QueueCommand> queueCmd_; ///< pointer to QueueCommand object
-    std::shared_ptr<Metrics> metrics_;
-	size_t state; ///< contain current state
-    size_t braces_count; ///< contain current degree of nesting
-    size_t nstrings;
+    std::shared_ptr<Metrics> metrics_;       ///< metrics handler
+	size_t state;                            ///< contain current state
+    size_t braces_count;                     ///< contain current degree of nesting
+    size_t nstrings;                         ///< accumulate the number of all handled strings (metric requirement)
 };
 

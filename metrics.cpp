@@ -1,3 +1,13 @@
+/**
+ * @file metrics.cpp
+ * @author SergeiNA (you@domain.com)
+ * @brief Metrics classes implementation
+ * @version 1.0
+ * @date 2020-01-08
+ * 
+ * @copyright Copyright (c) 2020
+ * 
+ */
 #include "metrics.h"
 
 MainMetrics::MainMetrics(std::ostream& ofs):
