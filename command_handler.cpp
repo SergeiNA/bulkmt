@@ -133,11 +133,15 @@ void CommandHandler::Run(std::istream &is = std::cin)
         process(std::move(temp));
     }
     dumpRemains();
-    if(metrics_)
-        metrics_->collect({},nstrings);
+}
+
+CommandHandler::~CommandHandler(){
+    
 }
 
 void CommandHandler::dumpRemains(){
     if (!isNested()&&!queueCmd_->empty())
         queueCmd_->notify();
+    if(metrics_)
+        metrics_->collect({},nstrings);
 }

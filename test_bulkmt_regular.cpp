@@ -52,6 +52,7 @@ bulk: 6
     q_command->subscribe(terminalLogThreadManager);
     CommandHandler cmdHandler(std::move(q_command));
     cmdHandler.Run(iss);
+    cmdHandler.dumpRemains();
     terminalLogThreadManager->stop();
     BOOST_CHECK_EQUAL(ans, oss.str());
 }

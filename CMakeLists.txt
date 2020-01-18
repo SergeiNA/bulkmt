@@ -21,6 +21,7 @@ set_target_properties(bulkmt test_bulkmt_regular test_bulkmt_nested PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
     COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
+    LINK_FLAGS "-fsanitize=thread"
 )
 
 set_target_properties(test_bulkmt_regular test_bulkmt_nested PROPERTIES

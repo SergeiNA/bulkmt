@@ -101,7 +101,7 @@ public:
         braces_count{0},
         nstrings{0}
          {}
-	~CommandHandler() = default;
+	~CommandHandler();
     /**
      * @brief handle on input command
      * 
@@ -115,21 +115,21 @@ public:
      */
 	void Run(std::istream& is);
 
+    /**
+     * @brief If in regular state dump all remaind commands in queueCmd_
+     * 
+     */
+        void dumpRemains();
 private:
-/**
- * @brief Check if current state Nested
- * 
- * @return true 
- * @return false 
- */
-	bool isNested() {
-		return state == (size_t)cmdState::nested;
-	}
-/**
- * @brief If in regular state dump all remaind commands in queueCmd_
- * 
- */
-    void dumpRemains();
+    /**
+     * @brief Check if current state Nested
+     * 
+     * @return true 
+     * @return false 
+     */
+    	bool isNested() {
+    		return state == (size_t)cmdState::nested;
+    	}
 private:
 	std::unique_ptr<QueueCommand> queueCmd_; ///< pointer to QueueCommand object
     std::shared_ptr<Metrics> metrics_;       ///< metrics handler
