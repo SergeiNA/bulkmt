@@ -1,0 +1,12 @@
+<map id="observer.h" name="observer.h">
+<area shape="rect" id="node2" href="$command__handler_8h.html" title="Declaration of commands container and commands handler QueueCommand is able to bulk commands if condi..." alt="" coords="214,229,353,256"/>
+<area shape="rect" id="node7" href="$metrics_8h.html" title="Declaration of metric collectors classes. " alt="" coords="343,80,419,107"/>
+<area shape="rect" id="node11" href="$observer_8cpp.html" title="log_observer and terminal_observer method definition " alt="" coords="443,80,540,107"/>
+<area shape="rect" id="node3" href="$bulkmt_8cpp.html" title="OTUS homework number 09. " alt="" coords="5,304,92,331"/>
+<area shape="rect" id="node4" href="$command__handler_8cpp.html" title="Method definitoin of QueueCommand and CommandHandler. " alt="" coords="116,304,269,331"/>
+<area shape="rect" id="node5" href="$test__bulkmt__nested_8cpp.html" title="test_bulkmt_nested.cpp" alt="" coords="293,304,455,331"/>
+<area shape="rect" id="node6" href="$test__bulkmt__regular_8cpp.html" title="test_bulkmt_regular.cpp" alt="" coords="479,304,640,331"/>
+<area shape="rect" id="node8" href="$threadManager_8h.html" title="ThreadManager is implementation of multithreadind queue with several workers. " alt="" coords="321,155,440,181"/>
+<area shape="rect" id="node10" href="$metrics_8cpp.html" title="Metrics classes implementation. " alt="" coords="465,155,555,181"/>
+<area shape="rect" id="node9" href="$threadManager_8cpp.html" title="Implimintation of ThreadManager class. " alt="" coords="377,229,510,256"/>
+</map>
